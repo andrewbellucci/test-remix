@@ -1,4 +1,5 @@
-import type { MetaFunction } from "@remix-run/node";
+import {json, LoaderFunctionArgs, MetaFunction} from "@remix-run/node";
+import {useLoaderData} from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,10 +8,17 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = ({ request }: LoaderFunctionArgs) => {
+  return json({
+    host: request.headers.get("host"),
+  })
+}
+
 export default function Index() {
+  const loaderData = useLoaderData<typeof loader>();
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
+      <h1>Welcome to Remix - {loaderData.host ?? 'unknown host'}</h1>
       <ul>
         <li>
           <a
